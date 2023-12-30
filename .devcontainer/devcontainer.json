@@ -1,0 +1,11 @@
+{
+    "name": "Go",
+    "dockerFile": "Dockerfile",
+    "settings": {
+        "go.gopath": "/go",
+        "go.goroot": "/usr/local/go"
+    },
+    "extensions": [
+        "golang.go"
+    ]
+}
