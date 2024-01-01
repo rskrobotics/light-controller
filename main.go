@@ -3,32 +3,43 @@ package main
 import (
 	"net/http"
 
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	r := gin.Default()
+	r.LoadHTMLGlob("templates/*")
+
+	store := cookie.NewStore([]byte("secret"))
+	r.Use(sessions.Sessions("mysession", store))
+
+	setupRoutes(r)
+	r.Run("0.0.0.0:8080")
+}
+
+func setupRoutes(r *gin.Engine) {
 	lightController := NewLightController()
 
-	// Route for turning on/off lights
-	r.GET("/light/:state/", func(c *gin.Context) {
-		state := c.Param("state")
-
-		var err error
-		switch state {
-		case "on":
-			err = lightController.TurnOn()
-		case "off":
-			err = lightController.TurnOff()
-		default:
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid state"})
+	r.GET("/login", func(c *gin.Context) {
+		session := sessions.Default(c)
+		loggedIn := session.Get("loggedIn")
+		if loggedIn != nil {
+			c.Redirect(http.StatusFound, "/light")
 			return
 		}
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to change light state"})
-			return
-		}
-		c.JSON(http.StatusOK, gin.H{"message": "Light state changed successfully."})
+		c.HTML(http.StatusOK, "login.html", nil)
 	})
-	r.Run() // listen and serve on 0.0.0.0:8080
+	r.POST("/login", login)
+	r.GET("/logout", logout)
+
+	protected := r.Group("/")
+	protected.Use(authRequired)
+	{
+		protected.GET("/light", func(c *gin.Context) {
+			c.HTML(http.StatusOK, "light.html", nil)
+		})
+		protected.GET("/light/:state", HandleLightState(lightController))
+	}
 }

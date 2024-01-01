@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IO Control Panel</title>
+    <style>
+        body {
+            background-color: #333;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 90%;
+            max-width: 600px;
+        }
+        .button {
+            padding: 10px;
+            margin: 10px;
+            width: calc(100% - 20px);
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script src="https://unpkg.com/htmx.org"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>IO Control Panel</h1>
+        <button class="button" hx-get="/action/5min" hx-trigger="click">5 Minutes</button>
+        <button class="button" hx-get="/action/30min" hx-trigger="click">30 Minutes</button>
+        <button class="button" hx-get="/action/1hr" hx-trigger="click">1 Hour</button>
+        <button class="button" hx-get="/action/2hr" hx-trigger="click">2 Hours</button>
+    </div>
+</body>
+</html>

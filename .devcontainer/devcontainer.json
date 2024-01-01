@@ -7,5 +7,6 @@
     },
     "extensions": [
         "golang.go"
-    ]
+    ],
+    "forwardPorts": [8080],
 }
